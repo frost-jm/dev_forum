@@ -29,7 +29,6 @@ const DropdownSelect = () => {
   return (
     <CreatableSelect
       isMulti
-      menuIsOpen={true}
       createOptionPosition="first"
       onChange={handleChange}
       onCreateOption={handleCreate}
