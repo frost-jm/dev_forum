@@ -14,6 +14,7 @@ import Filter from '@/components/Filter/Filter';
 import DeleteModal from '@/components/Modal/DeleteModal';
 import TooltipButton from '@/components/TooltipButton';
 import ConfirmModal from '@/components/Modal/ConfirmModal';
+import DropdownSelect from '@/components/Select/DropdownSelect';
 
 const TagWrapper = styled.div`
   display: flex;
@@ -75,6 +76,7 @@ export default function ComponentLibrary() {
         gap: '20px',
       }}
     >
+      <DropdownSelect />
       <TagWrapper>
         <Tags name="All" />
         <Tags name="Frontend" />
@@ -116,7 +118,7 @@ export default function ComponentLibrary() {
       />
 
       <Button onClick={() => setConfirmModalOpen(true)}>Exit post</Button>
-      <ConfirmModal 
+      <ConfirmModal
         isOpen={isConfirmModalOpen}
         onContinue={() => setConfirmModalOpen(false)}
         onDelete={handleDeleteClick}
