@@ -14,7 +14,7 @@ interface EditorProps {
 
 const Editor = ({ onSubmitSuccess }: EditorProps) => {
 	const { currentUserDetails } = useContext(UserContext);
-	const { mode, setPage, selectedPostTag, setMode, selectedCardData, submitting, setSubmitting } = useMode();
+	const { mode, setPage, setMode, selectedCardData, submitting, setSubmitting } = useMode();
 	const currentUserDetailsId = currentUserDetails && currentUserDetails.userId;
 
 	const [loading, setLoading] = useState(false);
@@ -25,17 +25,9 @@ const Editor = ({ onSubmitSuccess }: EditorProps) => {
 		postId: '',
 		title: '',
 		post: '',
-		tagsId: selectedPostTag,
 		created_by: '',
 		updated_at: '',
 	});
-
-	useEffect(() => {
-		setFormData((prevFormData) => ({
-			...prevFormData,
-			tagsId: selectedPostTag,
-		}));
-	}, [selectedPostTag]);
 
 	const [actionNotif, setActionNotif] = useState(false);
 
@@ -48,37 +40,33 @@ const Editor = ({ onSubmitSuccess }: EditorProps) => {
 			setSubmitting(true);
 
 			const { title, post } = formData;
-			const isUpdate = !!selectedCardData;
-			const mutation = isUpdate ? updatePost : createPost;
 
-			const variables = {
-				input: {
-					postId: isUpdate ? selectedCardData.id : undefined,
-					post,
+			let mutation: any;
+			let variables: any;
+
+			if (selectedCardData) {
+				mutation = updatePost;
+				variables = {
+					postId: selectedCardData?.id,
+					post: formData.post,
+					title: formData.title,
+					updated_at: new Date().toISOString().slice(0, 19).replace('T', ' '),
+				};
+			} else {
+				mutation = createPost;
+				variables = {
 					title,
-					tagsId: formData.tagsId,
-					updated_at: isUpdate ? new Date().toISOString().slice(0, 19).replace('T', ' ') : undefined,
-					created_by: !isUpdate ? currentUserDetailsId : undefined,
-				},
-			};
+					post,
+					createdBy: currentUserDetailsId,
+				};
+			}
 
 			const { data } = await mutation({
 				variables,
 				refetchQueries: [{ query: GET_POSTS }],
 			});
 
-			const handleSuccess = () => {
-				setLoading(false);
-				setSubmitting(false);
-				onSubmitSuccess();
-				if (!isUpdate) {
-					editorRef.current.destroy();
-					initializeEditor();
-					setPage(1);
-				}
-			};
-
-			if ((data.createdPost && !data.createdPost.success) || (data.updatedPost && !data.updatedPost.success)) {
+			if ((data.createPost && data.createPost.success === false) || (data.updatePost && data.updatePost.success === false)) {
 				setActionNotif(true);
 				setLoading(false);
 				setTimeout(() => {
@@ -86,12 +74,21 @@ const Editor = ({ onSubmitSuccess }: EditorProps) => {
 				}, 1000);
 			}
 
-			if (data.createdPost && data.createdPost.success) {
-				setTimeout(handleSuccess, 1000);
+			if (data.createPost && data.createPost.success === true) {
+				setLoading(false);
+				setSubmitting(false);
+				setTimeout(() => {
+					onSubmitSuccess();
+					editorRef.current.destroy();
+					initializeEditor();
+					setPage(1);
+				}, 1000);
 			}
 
-			if (data.updatedPost && data.updatedPost.success) {
-				handleSuccess();
+			if (data.updatePost && data.updatePost.success === true) {
+				setLoading(false);
+				setSubmitting(false);
+				onSubmitSuccess();
 			}
 		} catch (error) {
 			console.error('Error creating post:', error);
