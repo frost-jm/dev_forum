@@ -1,7 +1,5 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import CreatableSelect from 'react-select/creatable';
-
-import { useMode } from '@/context/ModeContext';
 
 const DropdownSelect = () => {
   const [selectedOptions, setSelectedOptions] = useState([]);
