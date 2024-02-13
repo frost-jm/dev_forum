@@ -310,6 +310,9 @@ const Editor = ({ onSubmitSuccess }: EditorProps) => {
 					'.codex-editor ::selection': {
 						backgroundColor: '#2c313c',
 					},
+					'.ce-block': {
+						marginTop: '18px',
+					},
 					'.codex-editor--narrow .codex-editor__redactor': {
 						marginRight: '0',
 					},

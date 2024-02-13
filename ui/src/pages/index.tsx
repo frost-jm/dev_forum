@@ -110,9 +110,9 @@ export default function Home() {
 						onEdit={handleEditClick}
 						onDelete={() => setDeleteModalOpen(true)}
 					>
-						<Editor onSubmitSuccess={handleEditorSubmitSuccess} />
-
 						{mode !== 'view' && <DropdownSelect />}
+
+						<Editor onSubmitSuccess={handleEditorSubmitSuccess} />
 
 						{selectedCardData && mode !== 'edit' && (
 							<>
