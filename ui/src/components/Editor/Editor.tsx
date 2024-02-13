@@ -473,6 +473,9 @@ const Editor = ({ onSubmitSuccess }: EditorProps) => {
 								marginLeft: '8px',
 							},
 						},
+						'.cdx-block:not(.cdx-list)': {
+							padding: '0',
+						},
 						'.ce-toolbar': {
 							left: '24px',
 						},
