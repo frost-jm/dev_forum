@@ -7,6 +7,7 @@ import { ADD_POST, UPDATE_POST, GET_POSTS } from '@/graphql/queries';
 import { useMutation } from '@apollo/client';
 import Button from '@/components/Button/Button';
 import { useMode } from '@/context/ModeContext';
+import CustomCodeTool from './code-tool.js';
 
 interface EditorProps {
 	onSubmitSuccess: () => void;
@@ -114,7 +115,6 @@ const Editor = ({ onSubmitSuccess }: EditorProps) => {
 		const ImageTool = (await import('@editorjs/image')).default;
 		const Marker = (await import('@editorjs/marker')).default;
 		const DragDrop = (await import('editorjs-drag-drop')).default;
-		const CodeBox = (await import('@bomdi/codebox')).default;
 		const Table = (await import('@editorjs/table')).default;
 		const AttachesTool = (await import('@editorjs/attaches')).default;
 		const Delimiter = (await import('@editorjs/delimiter')).default;
@@ -173,7 +173,7 @@ const Editor = ({ onSubmitSuccess }: EditorProps) => {
 					},
 				},
 				code: {
-					class: Code,
+					class: CustomCodeTool,
 				},
 				paragraph: {
 					class: Paragraph,
@@ -491,12 +491,31 @@ const Editor = ({ onSubmitSuccess }: EditorProps) => {
 							color: '#ffffff',
 						},
 					},
-					'.ce-code__textarea': {
+					'.ce-code': {
+						background: 'rgba(255, 255, 255, 0.08)!important',
 						borderRadius: '8px',
-						background: 'rgba(255, 255, 255, 0.08)',
+						padding: '16px!important',
+
+						'> code': {
+							padding: '0',
+							borderRadius: '0',
+							position: 'relative',
+						},
+					},
+					'.ce-code__textarea': {
+						background: 'transparent',
 						color: '#ffffff',
 						border: 'none',
+						whiteSpace: 'pre-wrap!important',
+						textShadow: 'none',
+						'.token.operator': {
+							background: 'transparent',
+						},
+						'@media screen and (max-width:767px)': {
+							whiteSpace: 'normal!important',
+						},
 					},
+
 					'.ce-toolbar__content': {
 						maxWidth: '598px',
 					},
