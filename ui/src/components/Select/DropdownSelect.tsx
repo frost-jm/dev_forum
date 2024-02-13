@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import CreatableSelect from 'react-select/creatable';
 
 import { GET_TAGS, ADD_TAG } from '@/graphql/queries';
