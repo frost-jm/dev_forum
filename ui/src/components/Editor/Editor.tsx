@@ -24,7 +24,7 @@ const Editor = ({ onSubmitSuccess }: EditorProps) => {
 	const editorRef = useRef<any>(null);
 
 	const [formData, setFormData] = useState({
-		postId: selectedCardData.id,
+		postId: mode !== 'create' ? selectedCardData.id : '',
 		title: '',
 		post: '',
 		tagsId: selectedPostTag,
@@ -44,8 +44,6 @@ const Editor = ({ onSubmitSuccess }: EditorProps) => {
 	const [createPost] = useMutation(ADD_POST);
 	const [updatePost] = useMutation(UPDATE_POST);
 
-	console.log('formdata', formData);
-
 	const handleSubmit = async () => {
 		try {
 			setLoading(true);
@@ -54,9 +52,6 @@ const Editor = ({ onSubmitSuccess }: EditorProps) => {
 			const { title, post } = formData;
 			const isUpdate = !!selectedCardData;
 			const mutation = isUpdate ? updatePost : createPost;
-
-			console.log('isupdate', isUpdate);
-			console.log('selected', selectedCardData);
 
 			const variables = {
 				postId: isUpdate ? selectedCardData?.id || undefined : undefined,
@@ -67,8 +62,6 @@ const Editor = ({ onSubmitSuccess }: EditorProps) => {
 					...(isUpdate ? {} : { created_by: currentUserDetailsId }),
 				},
 			};
-
-			console.log('variables', variables);
 
 			const { data } = await mutation({
 				variables,

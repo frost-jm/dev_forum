@@ -105,6 +105,11 @@ const Modal = ({ isOpen, onClose, onEdit, onDelete, children }: ModalProps) => {
 					'.react-select-container': {
 						paddingLeft: mode === 'create' ? '68px' : '0',
 					},
+					'@media screen and (max-width:480px)': {
+						'.react-select-container': {
+							paddingLeft: '0',
+						},
+					},
 				}}
 			>
 				{children}
