@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import CreatableSelect from 'react-select/creatable';
 
 import { GET_TAGS, ADD_TAG } from '@/graphql/queries';
@@ -6,7 +6,8 @@ import { useMutation, useQuery } from '@apollo/client';
 import { useMode } from '@/context/ModeContext';
 
 const DropdownSelect = () => {
-	const [selectedOptions, setSelectedOptions] = useState([]);
+	const [selectedOptions, setSelectedOptions] = useState<Array<{ label: string; value: string }>>([]);
+
 	const [menuIsOpen, setMenuIsOpen] = useState(false);
 
 	const { loading, error, data } = useQuery(GET_TAGS);
@@ -23,11 +24,10 @@ const DropdownSelect = () => {
 		label: tag.tag,
 	}));
 
-	const value = mode === 'edit' ? selectedCardData && selectedCardData.tags.map((tag) => ({ label: tag, value: tag })) : selectedOptions;
-
 	const handleChange = (newValue: any) => {
 		setSelectedOptions(newValue);
 
+		console.log('new', newValue);
 		const selectedValues = newValue.map((option: { value: string }) => option.value);
 
 		setSelectedPostTag(selectedValues);
@@ -42,6 +42,9 @@ const DropdownSelect = () => {
 
 			if (mutationData.createdTag.success) {
 				console.log('Tag created successfully:', mutationData.createdTag.data);
+
+				const newValue = [...selectedOptions, { label: inputValue, value: inputValue }];
+				handleChange(newValue);
 			} else {
 				console.error('Tag creation failed:', mutationData.createdTag.message);
 			}
@@ -176,6 +179,24 @@ const DropdownSelect = () => {
 		},
 	};
 
+	useEffect(() => {
+		if (mode === 'edit' && selectedCardData) {
+			const options = tags.map((tag: { id: any; tag: any }) => ({
+				value: tag.id,
+				label: tag.tag,
+			}));
+
+			const tagsWithIds = selectedCardData.tags.map((tagName) => {
+				const matchingOption = options.find((option: { label: string }) => option.label === tagName);
+				return matchingOption ? matchingOption : { value: tagName, label: tagName };
+			});
+
+			setSelectedOptions(tagsWithIds);
+		} else {
+			setSelectedOptions([]);
+		}
+	}, [mode, selectedCardData, tags]);
+
 	return (
 		<CreatableSelect
 			isMulti={true}
@@ -189,34 +210,12 @@ const DropdownSelect = () => {
 			onCreateOption={handleCreate}
 			createOptionPosition='first'
 			options={options}
-			value={value}
+			value={selectedOptions}
 			placeholder='Tags'
 			styles={{
 				menuPortal: (base) => ({ ...base, zIndex: 9999 }),
 				control: (baseStyles, state) => ({
 					...controlStyles,
-
-					// '.tags-multiselect__indicators': {
-					// 	width: '24px',
-					// 	height: '24px',
-
-					// 	svg: {
-					// 		display: 'none',
-					// 	},
-
-					// 	'&:first-child': {
-					// 		backgroundColor: 'transparent',
-					// 		backgroundImage: `url("data:image/svg+xml,%3Csvg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cg opacity='0.3'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M6.77342 5.90943C7.14247 5.34247 7.77312 5.00049 8.44961 5.00049H19.0022C20.1067 5.00049 21.0022 5.89592 21.0022 7.00049V17.0005C21.0022 18.1051 20.1067 19.0005 19.0022 19.0005H8.44966C7.77311 19.0005 7.14243 18.6585 6.77339 18.0914L3.51905 13.091C3.08737 12.4277 3.0874 11.5722 3.51913 10.909L6.77342 5.90943ZM19.0022 7.00049L8.44961 7.00049L5.19531 12L8.44966 17.0005H19.0022V7.00049ZM10.2908 9.28987C10.6813 8.89934 11.3145 8.89934 11.705 9.28987L12.9979 10.5828L14.2908 9.28987C14.6813 8.89934 15.3145 8.89934 15.705 9.28987C16.0955 9.68039 16.0955 10.3136 15.705 10.7041L14.4121 11.997L15.705 13.2899C16.0955 13.6804 16.0955 14.3136 15.705 14.7041C15.3145 15.0946 14.6813 15.0946 14.2908 14.7041L12.9979 13.4112L11.705 14.7041C11.3145 15.0946 10.6813 15.0946 10.2908 14.7041C9.90025 14.3136 9.90025 13.6804 10.2908 13.2899L11.5837 11.997L10.2908 10.7041C9.90025 10.3136 9.90025 9.68039 10.2908 9.28987Z' fill='white'/%3E%3C/g%3E%3C/svg%3E%0A")`,
-					// 	},
-
-					// 	'&:last-child': {
-					// 		backgroundColor: 'transparent',
-					// 		backgroundImage: `url("data:image/svg+xml,%3Csvg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cg opacity='0.3'%3E%3Cpath d='M7 9.00007L12 15L17 9.00007' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/g%3E%3C/svg%3E%0A")`,
-					// 	},
-					// 	'.tags-multiselect__indicator-separator': {
-					// 		backgroundColor: 'rgba(255, 255, 255, .10)',
-					// 	},
-					// },
 				}),
 				//@ts-ignore
 				multiValue: () => ({

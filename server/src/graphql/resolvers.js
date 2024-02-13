@@ -161,8 +161,10 @@ const resolvers = {
 				};
 			}
 		},
-		updatedPost: async (_, { postId, post, title, tagsId }) => {
+		updatedPost: async (_, { postId, input }) => {
 			try {
+				const { title, post, tagsId } = input;
+
 				const existingPost = await getPostById(postId);
 
 				if (!existingPost) {

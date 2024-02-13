@@ -120,6 +120,7 @@ export default function Home() {
 									sx={{
 										'@media (min-width: 961px)': {
 											width: '320px',
+											marginTop: '16px',
 										},
 										width: '100%',
 									}}
