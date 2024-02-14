@@ -68,6 +68,8 @@ const Filter = () => {
 		}
 	};
 
+	const tagsWithMostPost = data && data.tags ? [...data.tags].sort((a, b) => (b.post_count || 0) - (a.post_count || 0)).slice(0, 5) : [];
+
 	return (
 		<Stack
 			sx={{
@@ -105,7 +107,7 @@ const Filter = () => {
 						gap: '8px',
 						'> div': {
 							marginLeft: '0px !important',
-						}
+						},
 					},
 				}}
 			>
@@ -148,8 +150,8 @@ const Filter = () => {
 					direction='row'
 					sx={{ gap: '4px', flexWrap: 'wrap' }}
 				>
-					{data &&
-						[...[{ tag: 'All', id: 0 }], ...data.tags].map((option: { tag: string; id: number }, index: number) => (
+					{tagsWithMostPost &&
+						[...[{ tag: 'All', id: 0 }], ...tagsWithMostPost].map((option: { tag: string; id: number }, index: number) => (
 							<Tags
 								name={option.tag}
 								key={index}
@@ -157,6 +159,11 @@ const Filter = () => {
 								active={selectedTags.includes(option.tag)}
 							/>
 						))}
+					<Tags
+						name='Others'
+						withIcon={true}
+					/>
+					<Tags addSign={true} />
 				</Stack>
 				<Search />
 			</Stack>
