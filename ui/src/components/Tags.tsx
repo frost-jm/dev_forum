@@ -2,10 +2,11 @@ import { Box } from '@mui/material';
 
 interface TagData {
 	name?: string;
-	click?: () => void;
+	click?: (event: React.MouseEvent<HTMLElement>) => void;
 	active?: boolean;
 	withIcon?: boolean;
 	addSign?: boolean;
+	position?: boolean;
 }
 
 const TagContainer = {
@@ -32,7 +33,7 @@ const TagContainer = {
 	},
 };
 
-const Tags = ({ name, active, click, withIcon, addSign }: TagData) => {
+const Tags = ({ name, active, click, withIcon, addSign, position }: TagData) => {
 	return (
 		<Box
 			onClick={click}
@@ -42,6 +43,7 @@ const Tags = ({ name, active, click, withIcon, addSign }: TagData) => {
 				backgroundColor: active ? '#ffffff' : 'rgba(255, 255, 255, 0.12)',
 				color: active ? '#11141B' : '#ffffff',
 				padding: withIcon ? '6px 8px 6px 12px' : addSign ? '7px' : '6px 12px',
+				position: position ? 'relative' : 'relative',
 			}}
 		>
 			{name}
@@ -56,7 +58,7 @@ const Tags = ({ name, active, click, withIcon, addSign }: TagData) => {
 				>
 					<path
 						d='M4 6L7 10L10 6H4Z'
-						fill='white'
+						fill={active ? '#11141B' : '#ffffff'}
 					/>
 				</svg>
 			)}
@@ -71,9 +73,9 @@ const Tags = ({ name, active, click, withIcon, addSign }: TagData) => {
 				>
 					<path
 						d='M6.9987 3.00049V7.00016M6.9987 7.00016L7 11.0005M6.9987 7.00016L11 7.00049M6.9987 7.00016L3 7.00049'
-						stroke='white'
-						stroke-width='1.8'
-						stroke-linecap='round'
+						stroke={active ? '#11141B' : '#ffffff'}
+						strokeWidth='1.8'
+						strokeLinecap='round'
 					/>
 				</svg>
 			)}

@@ -61,7 +61,7 @@ const DropdownSelect = ({ usage, createStatus }: DropdownSelectProps) => {
 	};
 
 	const controlStyles = {
-		backgroundColor: '#25282E',
+		backgroundColor: usage === 'create' ? 'transparent' : '#25282E',
 		color: '#ffffff',
 		border: createStatus === true ? '1px solid rgba(1, 125, 87, 1)' : createStatus === false ? '1px solid rgba(209, 133, 133, 1)' : '1px solid #40444C',
 		borderRadius: menuIsOpen ? '4px 4px 0 0' : '4px',
